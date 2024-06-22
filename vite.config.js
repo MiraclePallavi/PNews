@@ -9,7 +9,7 @@ export default defineConfig({
     }
   },*/
   plugins: [react()],
-  base:"/News-website/"
+  base:'/PNews/',
  /* define:{
     'process.env.VITE_API_KEY':JSON.stringify(process.env.VITE_API_KEY)
   }*/
