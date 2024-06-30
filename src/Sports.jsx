@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import Bookmark from './Bookmark';
-//import sportImg from './assets/sports-tools.jpg'
+import sportImg from './assets/sports-tools.jpg'
 import ShareIcon from '@mui/icons-material/Share';
 const Sports = () => {
   const [articles, setArticles] = useState([]);
@@ -38,7 +38,9 @@ const Sports = () => {
 
   return (
     <>
-   
+    <div className="w-screen">
+        <img src={sportImg} className="object-cover h-48 w-screen" alt="Health" />
+</div>
       <div className="flex flex-wrap -mb-5 gap-x-4 gap-y-3 justify-evenly mt-4">
         {articles.map((a, index) => (
           <div key={index} className="max-w-sm rounded overflow-hidden shadow-lg">

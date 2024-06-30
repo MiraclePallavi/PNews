@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from "react";
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
-//import Bookmark from './Bookmark';
+import Bookmark from './Bookmark';
 import healthing from './assets/medical.jpg'
 import ShareIcon from '@mui/icons-material/Share';
 const Health = () => {
@@ -40,7 +40,9 @@ const Health = () => {
 
   return (
     <>
-  
+  <div className="w-screen">
+        <img src={healthing} className="object-cover h-48 w-screen" alt="Health" />
+</div>
    
       <div className="flex flex-wrap -mb-5 gap-x-4 gap-y-3 justify-evenly mt-4">
         {articles.map((a, index) => (
