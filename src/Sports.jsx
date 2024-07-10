@@ -1,27 +1,39 @@
 import React, { useEffect, useState } from "react";
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import Bookmark from './Bookmark';
-import sportImg from './assets/sports-tools.jpg'
+import sportImg from './assets/sports-tools.jpg';
 import ShareIcon from '@mui/icons-material/Share';
+import axios from "axios";
+
 const Sports = () => {
   const [articles, setArticles] = useState([]);
   const [bookmarkedArticles, setBookmarkedArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  async function newsapi() {
+  async function fetchNews() {
     try {
-      let response = await fetch(
-        `https://newsapi.org/v2/everything?q=sports&apiKey=9704b7941d5644c0afbd65769b640141`
-      );
-      let result = await response.json();
-      console.log(result);
-      setArticles(result.articles);
-    } catch (error) {
-      console.error("Error fetching the news articles:", error);
+      const API_KEY = '7M2C9Cb8ss8uyKTa76146lLvmmeuneYtsZApRe5W';
+      const response = await axios.get('https://api.thenewsapi.com/v1/news/top', {
+        params: {
+          api_token: API_KEY,
+          language: 'en',
+          categories: 'sports',
+          countries: 'us',
+        },
+      });
+      console.log(response);  // Log the response for debugging
+      setArticles(response.data.data);
+      setLoading(false);
+    } catch (err) {
+      console.error("Error fetching the news articles:", err);  // Log the error
+      setError(err);
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    newsapi();
+    fetchNews();
     const bookmarks = JSON.parse(localStorage.getItem("bookmarkedArticles")) || [];
     setBookmarkedArticles(bookmarks);
   }, []);
@@ -31,20 +43,24 @@ const Sports = () => {
     setBookmarkedArticles(updatedBookmarks);
     localStorage.setItem("bookmarkedArticles", JSON.stringify(updatedBookmarks));
   };
+
   const handleShare = (articleUrl) => {
     const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(articleUrl)}`;
     window.open(whatsappUrl, '_blank');
   };
 
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error loading articles: {error.message}</p>;
+
   return (
     <>
-    <div className="w-screen">
-        <img src={sportImg} className="object-cover h-48 w-screen" alt="Health" />
-</div>
+      <div className="w-screen">
+        <img src={sportImg} className="object-cover h-48 w-screen" alt="Sports" />
+      </div>
       <div className="flex flex-wrap -mb-5 gap-x-4 gap-y-3 justify-evenly mt-4">
         {articles.map((a, index) => (
           <div key={index} className="max-w-sm rounded overflow-hidden shadow-lg">
-            <img className="w-full" src={a.urlToImage} alt={a.title} />
+            <img className="w-full" src={a.image_url} alt={a.title} />
             <div className="px-6 py-4">
               <div className="font-bold text-xl mb-2">{a.title}</div>
               <p className="text-gray-700 text-base">{a.description}</p>
@@ -54,7 +70,7 @@ const Sports = () => {
                 <a href={a.url} className="text-2xl hover:text-blue-500">Read</a>
               </span>
               <span
-                className=" bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2 float-end hover:bg-pink-200 cursor-pointer"
+                className="bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2 float-end hover:bg-pink-200 cursor-pointer"
                 onClick={() => handleBookmark(a)}
               >
                 <BookmarkBorderIcon />
@@ -75,3 +91,4 @@ const Sports = () => {
 };
 
 export default Sports;
+

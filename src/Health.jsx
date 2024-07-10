@@ -4,23 +4,32 @@ import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import Bookmark from './Bookmark';
 import healthing from './assets/medical.jpg'
 import ShareIcon from '@mui/icons-material/Share';
+import axios from "axios";
 const Health = () => {
   const [articles, setArticles] = useState([]);
   const [bookmarkedArticles, setBookmarkedArticles] = useState([]);
-
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   async function newsapi() {
     try {
-      
-      let response = await fetch(
-        `https://newsapi.org/v2/everything?q=health&apiKey=9704b7941d5644c0afbd65769b640141`
-      );
-      let result = await response.json();
-      console.log(result);
-      setArticles(result.articles);
-    } catch (error) {
-      console.error("Error fetching the news articles:", error);
+      const API_KEY = '7M2C9Cb8ss8uyKTa76146lLvmmeuneYtsZApRe5W';
+      const response = await axios.get('https://api.thenewsapi.com/v1/news/top', {
+        params: {
+          api_token: API_KEY,
+          language: 'en',
+          categories: 'health',
+          countries: 'us',
+        },
+      });
+      console.log(response);  // Log the response for debugging
+      setArticles(response.data.data);
+      setLoading(false);
+    } catch (err) {
+      console.error("Error fetching the news articles:", err);  // Log the error
+      setError(err);
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
     newsapi();

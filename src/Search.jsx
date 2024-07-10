@@ -1,26 +1,38 @@
+
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import Bookmark from './Bookmark';
 import ShareIcon from '@mui/icons-material/Share';
+import axios from "axios";
 const SearchResults = () => {
   const [news, setNews] = useState([]);
   const [bookmarkedArticles, setBookmarkedArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const location = useLocation();
   const query = new URLSearchParams(location.search).get("query");
   async function newsapi() {
     try {
-      let response = await fetch(
-        `https://newsapi.org/v2/everything?q=${query}&apiKey=9704b7941d5644c0afbd65769b640141`
-      );
-      let result = await response.json();
-      console.log(result);
-      setNews(result.articles);
-    } catch (error) {
-      console.error("Error fetching the news articles:", error);
+      const API_KEY = '7M2C9Cb8ss8uyKTa76146lLvmmeuneYtsZApRe5W';
+      const response = await axios.get('https://api.thenewsapi.com/v1/news/top', {
+        params: {
+          api_token: API_KEY,
+          language: 'en',
+          categories: `${query}`,
+          countries: 'us',
+        },
+      });
+      console.log(response);  // Log the response for debugging
+      setNews(response.data.data);
+      setLoading(false);
+    } catch (err) {
+      console.error("Error fetching the news articles:", err);  // Log the error
+      setError(err);
+      setLoading(false);
     }
-  }
-
+  };
   useEffect(() => {
     newsapi();
     const bookmarks = JSON.parse(localStorage.getItem("bookmarkedArticles")) || [];
